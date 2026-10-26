@@ -1,0 +1,40 @@
+{
+  "required": true,
+  "package": "com.iklon.niceties.client.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ExampleClientMixin",
+    "LivingEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "mixins": [
+    "AbstractContainerScreenMixin",
+    "BlockEntityMixin",
+    "BlockMixin",
+    "ChatScreenMixin",
+    "ClientChunkCacheMixin",
+    "ClientInputAccessor",
+    "ClientLevelMixin",
+    "ElytraAnimationStateMixin",
+    "EntityMixin",
+    "GameMenuScreenMixin",
+    "GameRendererMixin",
+    "InventoryScreenMixin",
+    "KeyboardHandlerMixin",
+    "LevelRendererMixin",
+    "LocalPlayerAccessor",
+    "LocalPlayerMixin",
+    "MinecraftAccessor",
+    "MinecraftMixin",
+    "MouseHandlerMixin",
+    "MultiPlayerGameModeMixin",
+    "PacketProcessorMixin",
+    "PlayerMixin",
+    "TimerMixin"
+  ]
+}
