@@ -52,7 +52,7 @@ public abstract class ChestSpecialRendererMixin implements NoDataSpecialModelRen
     void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor, Operation<Void> original){
         //Niceties.LOGGER.info("submit render");
 
-        submitNodeCollector.submitModel(this.model, this.openness, poseStack, lightCoords, overlayCoords, 0xff1cdeff, this.sprite, this.sprites, 0xaaffffff, null);
+        submitNodeCollector.submitModel(this.model, this.openness, poseStack, lightCoords, overlayCoords, 0xff1cdeff, this.sprite, this.sprites, 0xaaffffff);
         submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.secondaryBlockOutline(), (pose, builder) -> renderCustomGeometry(pose, builder));
     }
 

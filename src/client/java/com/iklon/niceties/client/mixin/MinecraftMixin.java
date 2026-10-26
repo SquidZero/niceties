@@ -37,10 +37,6 @@ public abstract class MinecraftMixin extends ReentrantBlockableEventLoop<Runnabl
     private InputType lastInputType;
 
     @Shadow
-    @Nullable
-    public Screen screen;
-
-    @Shadow
     @Final
     public MouseHandler mouseHandler;
 
@@ -83,19 +79,7 @@ public abstract class MinecraftMixin extends ReentrantBlockableEventLoop<Runnabl
         NicetiesClient.instance.shutdownESP();
     }
 
-    @Redirect(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/KeyMapping;releaseAll()V"))
-    void setScreen() {
-        this.mouseHandler.releaseMouse();
-        InputConstants.grabOrReleaseMouse(this.window, InputConstants.CURSOR_NORMAL, (int)this.mouseHandler.xpos(), (int)this.mouseHandler.ypos());
-        if (!NicetiesClient.instance.invMove) {
-            KeyMapping.releaseAll();
-        } else {
-            var useKey = KeyMapping.get(this.options.keyUse.getName());
-            var attackKey = KeyMapping.get(this.options.keyAttack.getName());
-            if (useKey != null) useKey.setDown(false);
-            if (attackKey != null) attackKey.setDown(false);
-        }
-    }
+
 
     @Unique
     int i = 0;

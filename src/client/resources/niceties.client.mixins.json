@@ -24,6 +24,7 @@
     "EntityMixin",
     "GameMenuScreenMixin",
     "GameRendererMixin",
+    "GuiMixin",
     "InventoryScreenMixin",
     "KeyboardHandlerMixin",
     "LevelRendererMixin",

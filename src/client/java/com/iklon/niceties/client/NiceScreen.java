@@ -158,6 +158,6 @@ public class NiceScreen extends Screen {
         String numAtksinp = numAtksInput.getValue();
         if (!velinp.isEmpty()) instance.addedVel = Double.parseDouble(velinp);
         if (!numAtksinp.isEmpty()) instance.numAtks = Integer.parseInt(numAtksinp);
-        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().gui.setScreen(null);
     }
 }

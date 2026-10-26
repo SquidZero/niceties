@@ -13,5 +13,6 @@ public class GameRendererMixin {
     @Inject(method = "close", at = @At("RETURN"))
     void onGameRendererClose(CallbackInfo ci) {
         NicetiesClient.pipeline.close();
+        //CustomRenderPipeline.close();
     }
 }

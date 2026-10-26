@@ -17,6 +17,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
@@ -36,7 +38,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.lwjgl.glfw.GLFW;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -77,7 +78,7 @@ public class NicetiesClient implements ClientModInitializer {
     public boolean autoClick = false;
     public boolean autoClickSpam = false;
     public static final boolean logPackets = false;
-    public static final CustomRenderPipeline pipeline = new CustomRenderPipeline();
+    public static CustomRenderPipeline pipeline = null;
     public ClientInput input;
 
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("niceties", "keymappings"));
@@ -88,60 +89,61 @@ public class NicetiesClient implements ClientModInitializer {
     ScheduledFuture<?> espHandle;
     @Override
     public void onInitializeClient() {
+
         instance = this;
         // This entrypoint is suitable for setting up client-specific logic, such as rendering.
         flykey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.togglefly",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_K,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_K,
                 CATEGORY
         ));
         addvelkey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.addvel",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_UP,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_UP,
                 CATEGORY
         ));
         decvelkey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.decreasevel",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_DOWN,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_DOWN,
                 CATEGORY
         ));
         nukeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.toggleNuke",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_HOME,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_HOME,
                 CATEGORY
         ));
         noSlowKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.noSlow",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_BACKSLASH,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_BACKSLASH,
                 CATEGORY
         ));
         placeBeneathKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.placeBeneath",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_PAGE_DOWN,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_PAGEDOWN,
                 CATEGORY
         ));
         playerGlowKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.playerGlow",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_SEMICOLON,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_SEMICOLON,
                 CATEGORY
         ));
         nicetiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.open_niceties",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_RIGHT_SHIFT,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_RSHIFT,
                 CATEGORY
         ));
         autoClickKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.iklon.niceties.autoclick",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_LEFT_BRACKET,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_LBRACKET,
                 CATEGORY
         ));
 
@@ -215,7 +217,7 @@ public class NicetiesClient implements ClientModInitializer {
                 }
             }
             while (NicetiesClient.nicetiesKey.consumeClick()) {
-                minecraft.setScreen(new NiceScreen(Component.literal("Niceties")));
+                minecraft.gui.setScreen(new NiceScreen(Component.literal("Niceties")));
             }
             while (NicetiesClient.autoClickKey.consumeClick()) {
                 instance.autoClick = !instance.autoClick;
@@ -299,7 +301,7 @@ public class NicetiesClient implements ClientModInitializer {
     }
 
     public void sendChatMsg(String message) {
-        Minecraft.getInstance().gui.getChat().addRecentChat(message);
+        Minecraft.getInstance().gui.hud.getChat().addRecentChat(message);
     }
     public void addMsgToQueue(String message) {
         System.out.println(message);

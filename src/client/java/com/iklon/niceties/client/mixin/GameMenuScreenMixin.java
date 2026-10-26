@@ -34,6 +34,6 @@ public abstract class GameMenuScreenMixin extends Screen {
 //            assert this.client != null;
 //            this.client.setScreen(new VioScreen("config"));
 //        }).build());
-        helper.addChild(Button.builder(Component.literal("Niceties"), (button) -> { this.minecraft.setScreen(new NiceScreen(Component.literal("config"))); }).build());
+        helper.addChild(Button.builder(Component.literal("Niceties"), (button) -> { this.minecraft.gui.setScreen(new NiceScreen(Component.literal("config"))); }).build());
     }
 }

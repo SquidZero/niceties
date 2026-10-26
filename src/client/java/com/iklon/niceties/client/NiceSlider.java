@@ -1,6 +1,7 @@
 package com.iklon.niceties.client;
 
 import com.iklon.niceties.Niceties;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.function.DoubleConsumer;
 
@@ -209,17 +209,17 @@ public class NiceSlider extends AbstractWidget.WithInactiveMessage {
     @Override
     public boolean keyPressed(final KeyEvent event) {
         if (typing) {
-            if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
+            if (event.key() == InputConstants.KEY_BACKSPACE) {
                 manualInput.deleteCharAt(Math.max(0, cur.getPos()));
                 if (cur.getPos() > 0) {
                     cur.decrement();
                 }
-            } else if (event.key() == GLFW.GLFW_KEY_LEFT) {
+            } else if (event.key() == InputConstants.KEY_LEFT) {
                 cur.decrement(0);
-            } else if (event.key() == GLFW.GLFW_KEY_RIGHT) {
+            } else if (event.key() == InputConstants.KEY_RIGHT) {
                 cur.increment(manualInput.length()-1);
             }
-            else if (event.key() == GLFW.GLFW_KEY_ENTER) {
+            else if (event.key() == InputConstants.KEY_RETURN) {
                 if (!manualInput.isEmpty()) {
                     displayValue = Double.parseDouble(manualInput.toString());
                     setValue(displayValue / maxValue);

@@ -23,7 +23,7 @@ public abstract class KeyboardHandlerMixin {
 
     @ModifyVariable(method = "keyPress", at = @At("STORE"), name = "handlesGameInput")
     boolean handleGameInput(boolean handlesGameInput) {
-        if (minecraft.screen instanceof ChatScreen) return handlesGameInput;
+        if (minecraft.gui.screen() instanceof ChatScreen) return handlesGameInput;
         else return NicetiesClient.instance.invMove || handlesGameInput;
     }
 

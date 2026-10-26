@@ -19,7 +19,8 @@
 			"com.iklon.niceties.Niceties"
 		],
 		"client": [
-			"com.iklon.niceties.client.NicetiesClient"
+			"com.iklon.niceties.client.NicetiesClient",
+            "com.iklon.niceties.client.CustomRenderPipeline"
 		]
 	},
 	"mixins": [
@@ -31,7 +32,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.19.2",
-		"minecraft": "~26.1.2",
+		"minecraft": "~26.3",
 		"java": ">=25",
 		"fabric-api": "*"
 	}

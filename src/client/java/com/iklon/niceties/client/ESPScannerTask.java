@@ -37,7 +37,7 @@ public class ESPScannerTask implements Runnable {
             int r = NicetiesClient.instance.espDistance;
             if (mc.player != null) {
                 //BlockPos.findClosestMatch(mc.player.blockPosition(), r, r, predicate);
-                var s = StreamSupport.stream(BlockPos.withinManhattan(mc.player.blockPosition(), r, r, r).spliterator(), true).iterator();
+                var s = StreamSupport.stream(BlockPos.withinManhattan(mc.player.blockPosition(), r).spliterator(), true).iterator();
                 while (s.hasNext()) {
                     if (predicate.test(s.next())) {
                         break;

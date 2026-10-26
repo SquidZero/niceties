@@ -39,7 +39,7 @@ public class ChatScreenMixin extends Screen {
         if (Objects.equals(cmd, "maceBlock")) {
             assert Minecraft.getInstance().player != null;
             LocalPlayer player = Minecraft.getInstance().player;
-            ChatComponent chat = Minecraft.getInstance().gui.getChat();
+            ChatComponent chat = Minecraft.getInstance().gui.hud.getChat();
             if (!player.getItemInHand(player.getUsedItemHand()).is(Item.byId(0))) {
                 try {
                     NicetiesClient.instance.maceBlock = Block.byItem(player.getItemInHand(player.getUsedItemHand()).getItem());

@@ -176,17 +176,6 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
         ));
     }
 
-    @WrapMethod(method = "drop")
-    boolean confirmDrop(boolean all, Operation<Boolean> original) {
-        var item = this.getInventory().getSelectedItem();
-        if (item.isEnchanted() || item.getRarity().compareTo(Rarity.RARE) >= 0) {
-            minecraft.gui.setOverlayMessage(Component.literal("are you sure you want to drop that?").withStyle(ChatFormatting.RED), true);
-            return false;
-        } else {
-            return original.call(all);
-        }
-    }
-
     @WrapMethod(method = "isCrouching")
     boolean isCrouching(Operation<Boolean> original) {
         if (instance.elytraFly) return false;

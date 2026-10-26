@@ -1,18 +1,24 @@
 package com.iklon.niceties.client.mixin;
 
-import com.iklon.niceties.Niceties;
 import com.iklon.niceties.client.NicetiesClient;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -122,6 +128,22 @@ public abstract class LivingEntityMixin extends Entity {
     @WrapMethod(method = "jumpInLiquid")
     void swimUpward(TagKey<@NotNull Fluid> type, Operation<Void> original) {
         if ((LivingEntity)(Object)(this) instanceof LocalPlayer && !NicetiesClient.instance.waterPhysics) this.jumpFromGround(); else original.call(type);
+    }
+
+    @WrapMethod(method = "drop")
+    ItemEntity confirmDrop(ItemStack itemStack, boolean thrownFromHand, Prediction prediction, Operation<ItemEntity> original) {
+        if ((LivingEntity)(Object)(this) instanceof LocalPlayer player && NicetiesClient.instance.preventDrop) {
+            Minecraft minecraft = Minecraft.getInstance();
+            var item = player.getInventory().getSelectedItem();
+            if (item.isEnchanted() || item.getRarity().compareTo(Rarity.RARE) >= 0) {
+                minecraft.gui.hud.setOverlayMessage(Component.literal("are you sure you want to drop that?").withStyle(ChatFormatting.RED), true);
+                return null;
+            } else {
+                return original.call(itemStack, thrownFromHand, prediction);
+            }
+        } else {
+            return original.call(itemStack, thrownFromHand, prediction);
+        }
     }
 
 //    @WrapMethod(method = "shouldSwimInFluids")

@@ -30,7 +30,7 @@ public abstract class PacketProcessorMixin implements AutoCloseable {
                 if (packet instanceof ServerboundMovePlayerPacket movePacket)
                 Niceties.LOGGER.info("{} | X: {} Y: {} Z: {}", packet.type(), movePacket.getX(6969), movePacket.getY(6969), movePacket.getZ(6969));
                 if (packet instanceof ServerboundUseItemOnPacket itemUsePacket) {
-                    Niceties.LOGGER.info("{} | {}", packet.type(), itemUsePacket.getHitResult());
+                    Niceties.LOGGER.info("{} | {}", packet.type(), itemUsePacket.hitResult());
                 }
                 else Niceties.LOGGER.info("{}", packet.type());
             }

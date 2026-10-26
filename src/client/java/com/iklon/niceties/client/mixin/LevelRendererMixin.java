@@ -3,7 +3,6 @@ package com.iklon.niceties.client.mixin;
 import com.iklon.niceties.Niceties;
 import com.iklon.niceties.client.NicetiesClient;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
@@ -14,8 +13,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
@@ -46,37 +44,38 @@ import java.util.function.Predicate;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin implements ResourceManagerReloadListener, AutoCloseable {
+
     @Shadow
-    private @Nullable ClientLevel level;
+    @Final
+    private LevelRenderState levelRenderState;
 
     @Inject(method = "submitBlockEntities", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
-    void BlockEntityESP(PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeStorage submitNodeStorage, CallbackInfo ci, @Local(name = "blockPos") BlockPos blockPos) {
+    void BlockEntityESP(PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector, CallbackInfo ci, @Local(name = "blockPos") BlockPos blockPos) {
         if (NicetiesClient.instance.containerESP) {
-            assert this.level != null;
-            BlockEntity blockEntity = this.level.getBlockEntity(blockPos);
+            assert Minecraft.getInstance().level != null;
+            BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(blockPos);
             if (blockEntity != null) {
-
             BlockState state = blockEntity.getBlockState();
             final Block block = state.getBlock();
-            if (block == Blocks.CHEST) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos, 0f, 1f, 0f, 0.5f);
-            } else if (block == Blocks.TRAPPED_CHEST) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos, 1f, 0.5f, 0f, 0.35f);        }
-            else if (block == Blocks.ENDER_CHEST) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos,  0.68f, 0f, 1f, 0.5f);
-            } else if (block == Blocks.SHULKER_BOX) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos,  0.65f, 0.48f, 0.64f, 0.5f);
-            } else if (block == Blocks.BARREL) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos, 0.2f, 0.8f, 0.2f, 0.5f);
-            } else if (block == Blocks.SPAWNER) {
-                if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
-                    NicetiesClient.pipeline.addPos(blockPos, 0f, 0.5f, 0.4f, 0.4f);
-            }
+                if (block == Blocks.CHEST) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos, 0f, 1f, 0f, 0.5f);
+                } else if (block == Blocks.TRAPPED_CHEST) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos, 1f, 0.5f, 0f, 0.35f);        }
+                else if (block == Blocks.ENDER_CHEST) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos,  0.68f, 0f, 1f, 0.5f);
+                } else if (block == Blocks.SHULKER_BOX) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos,  0.65f, 0.48f, 0.64f, 0.5f);
+                } else if (block == Blocks.BARREL) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos, 0.2f, 0.8f, 0.2f, 0.5f);
+                } else if (block == Blocks.SPAWNER) {
+                    if (!NicetiesClient.pipeline.blocks.containsKey(blockPos))
+                        NicetiesClient.pipeline.addPos(blockPos, 0f, 0.5f, 0.4f, 0.4f);
+                }
             }
         }
     }
