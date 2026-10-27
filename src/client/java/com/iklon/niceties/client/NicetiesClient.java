@@ -33,11 +33,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.PacketType;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -57,6 +61,7 @@ public class NicetiesClient implements ClientModInitializer {
     public static KeyMapping playerGlowKey;
     public static KeyMapping nicetiesKey;
     public static KeyMapping autoClickKey;
+    public static KeyMapping teleportKey;
     public double addedVel = 0;
     public boolean nuke = false;
     public Block maceBlock = null;
@@ -146,6 +151,12 @@ public class NicetiesClient implements ClientModInitializer {
                 InputConstants.KEY_LBRACKET,
                 CATEGORY
         ));
+        teleportKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.iklon.niceties.teleport",
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_INSERT,
+                CATEGORY
+        ));
 
 //        try (FileReader reader = new FileReader(Minecraft.getInstance().gameDirectory + "/config/niceties_esp.json")) {
 //            JsonElement json = JsonParser.parseReader(reader);
@@ -200,6 +211,24 @@ public class NicetiesClient implements ClientModInitializer {
                     )
             );
         });
+
+        ClientCommandRegistrationCallback.EVENT.register(((commandDispatcher, commandBuildContext) -> {
+            commandDispatcher.register(ClientCommands.literal("vclip")
+                    .then(ClientCommands.argument("height", FloatArgumentType.floatArg())
+                            .executes(commandContext -> {
+                                Minecraft mc = Minecraft.getInstance();
+                                BlockPos pos = mc.player.blockPosition();
+                                float displacement = commandContext.getArgument("height", Float.class);
+//                                mc.player.verticalCollision = false;
+//                                mc.player.verticalCollisionBelow = false;
+                                //mc.getConnection().send(new ServerboundMovePlayerPacket.Pos(new Vec3(pos.getX(), pos.getY() + displacement, pos.getZ()), mc.player.onGround(), mc.player.horizontalCollision));
+                                mc.player.setSwimming(true);
+                                mc.player.setPos(pos.getX(), pos.getY() +displacement, pos.getZ());
+                                mc.player.syncPosition = true;
+                                return 1;
+                            }))
+            );
+        }));
 
         instance.input = new KeyboardInput(Minecraft.getInstance().options);
 

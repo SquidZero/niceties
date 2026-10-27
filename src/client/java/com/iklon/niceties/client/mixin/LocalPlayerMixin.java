@@ -150,6 +150,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
         ClientTickEvents.END_CLIENT_TICK.register((client -> {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && player.isAlive()) {
+                player.syncPosition = false;
                 while (flykey.consumeClick()) {
                     isFlying = !isFlying;
                     instance.flying = !instance.flying;
