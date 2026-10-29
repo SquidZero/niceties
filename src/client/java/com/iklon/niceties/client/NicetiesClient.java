@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.io.FileReader;
@@ -82,6 +83,7 @@ public class NicetiesClient implements ClientModInitializer {
     public boolean preventDrop = true;
     public boolean autoClick = false;
     public boolean autoClickSpam = false;
+    public boolean doTeleport = false;
     public static final boolean logPackets = false;
     public static CustomRenderPipeline pipeline = null;
     public ClientInput input;
@@ -251,6 +253,9 @@ public class NicetiesClient implements ClientModInitializer {
             while (NicetiesClient.autoClickKey.consumeClick()) {
                 instance.autoClick = !instance.autoClick;
             }
+            while (NicetiesClient.teleportKey.consumeClick()) {
+                this.teleport();
+            }
             if (autoClick) {
                 var player = minecraft.player;
                 assert player != null;
@@ -261,6 +266,24 @@ public class NicetiesClient implements ClientModInitializer {
                 }
             }
         }));
+    }
+
+    void teleport() {
+        Minecraft mc = Minecraft.getInstance();
+        this.doTeleport = true;
+        assert mc.player != null;
+        HitResult r = mc.player.raycastHitResult(1, mc.getCameraEntity());
+        Vec3 loc = r.getLocation();
+        final double dist = loc.length();
+
+        if (dist > 40.0) {
+            try {
+                int steps = Math.toIntExact(Math.round(dist / 40.0));
+
+            } catch (Exception e) {
+                mc.gui.hud.setOverlayMessage(Component.literal("teleport distance too far!"), true);
+            }
+        }
     }
 
     public void saveESPBlocks() {

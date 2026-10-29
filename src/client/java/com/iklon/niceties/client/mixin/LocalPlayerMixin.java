@@ -23,6 +23,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -181,6 +182,15 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     boolean isCrouching(Operation<Boolean> original) {
         if (instance.elytraFly) return false;
         else return original.call();
+    }
+
+    @ModifyVariable(method = "raycastHitResult", at = @At(value = "STORE"), name = "blockInteractionRange")
+    double interactionRangeFix(double defaultRange) {
+        if (NicetiesClient.instance.doTeleport) {
+            return Double.MAX_VALUE;
+        } else {
+            return defaultRange;
+        }
     }
 
 //    @Inject(method = "moveTowardsClosestSpace", at = @At("RETURN"))
