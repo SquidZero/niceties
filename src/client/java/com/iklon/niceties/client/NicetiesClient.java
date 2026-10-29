@@ -279,10 +279,19 @@ public class NicetiesClient implements ClientModInitializer {
         if (dist > 40.0) {
             try {
                 int steps = Math.toIntExact(Math.round(dist / 40.0));
-
+                Vec3 direction = mc.player.getHeadLookAngle();
+                ClientTickEvents.END_CLIENT_TICK.register((t) -> {
+                    if (steps >= 0) {
+                        Vec3 next = mc.player.position();
+                        next.add(direction);
+                        mc.player.setPos(next);
+                    }
+                });
             } catch (Exception e) {
                 mc.gui.hud.setOverlayMessage(Component.literal("teleport distance too far!"), true);
             }
+        } else {
+            mc.player.setPos(loc);
         }
     }
 
